@@ -4,7 +4,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginServicecatalogueServicecatalogue extends CommonDBTM {
-    static $rightname = 'config';
+    static $rightname = 'plugin_servicecatalogue';
     
     static function getTypeName($nb = 0) {
         return __('Service Catalogue', 'servicecatalogue');
@@ -12,5 +12,23 @@ class PluginServicecatalogueServicecatalogue extends CommonDBTM {
     
     static function getMenuContent() {
         return PluginServicecatalogueMenu::getMenuContent();
+    }
+    
+    static function install() {
+        // Créer le droit dans la base de données
+        $right = new ProfileRight();
+        $right->updateProfileRights([0], [
+            self::$rightname => READ + UPDATE + CREATE + PURGE
+        ]);
+        
+        return true;
+    }
+    
+    static function uninstall() {
+        // Supprimer le droit
+        $right = new ProfileRight();
+        $right->deleteByCriteria(['name' => self::$rightname]);
+        
+        return true;
     }
 }

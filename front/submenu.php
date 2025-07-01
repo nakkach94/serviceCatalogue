@@ -2,36 +2,58 @@
 include ('../../../inc/includes.php');
 Plugin::load('servicecatalogue', true);
 
-$types = [
-    'support' => __('Demande de support', 'servicecatalogue'),
+// Types valides
+$valid_types = ['support', 'data', 'infra', 'apps', 'advice'];
+$type = isset($_GET['type']) && in_array($_GET['type'], $valid_types) ? $_GET['type'] : 'support';
+
+// Titres des pages
+$titles = [
+    'support' => __('Demandes de Support', 'servicecatalogue'),
     'data'    => __('Données', 'servicecatalogue'),
     'infra'   => __('Infrastructure SI', 'servicecatalogue'),
-    'apps'    => __('Applications Métier', 'servicecatalogue'),
+    'apps'    => __('Application Métier', 'servicecatalogue'),
     'advice'  => __('Conseil SI', 'servicecatalogue')
 ];
 
-$type = $_GET['type'] ?? 'support';
-$title = $types[$type] ?? $types['support'];
+// Icônes
+$icons = [
+    'support' => 'fas fa-headset',
+    'data'    => 'fas fa-database',
+    'infra'   => 'fas fa-server',
+    'apps'    => 'fas fa-window-restore',
+    'advice'  => 'fas fa-lightbulb'
+];
 
-Html::header($title, '', "admin", "pluginservicecataloguemenu", $type);
+Html::header(
+    $titles[$type], 
+    $_SERVER['PHP_SELF'], 
+    "servicecatalogue", 
+    "pluginservicecataloguemenu",
+    $type
+);
 
-echo "<div class='center' style='margin-top: 30px; max-width: 1200px; margin: auto;'>";
-echo "<h2><i class='fas fa-folder-open'></i> $title</h2>";
+echo "<div class='servicecatalogue-container'>";
+echo "<h1><i class='{$icons[$type]}'></i> {$titles[$type]}</h1>";
 
-// Exemple de contenu dynamique
+// Contenu spécifique à chaque type
 switch ($type) {
     case 'support':
-        echo "<p>".__('Gestion des demandes de support technique', 'servicecatalogue')."</p>";
+        echo "<p>Gestion des demandes de support technique</p>";
+        // Ajouter des listes ou fonctionnalités spécifiques
         break;
     case 'data':
-        echo "<p>".__('Services liés à la gestion des données', 'servicecatalogue')."</p>";
+        echo "<p>Gestion des données et documents</p>";
         break;
-    // ... autres cas
+    case 'infra':
+        echo "<p>Gestion de l'infrastructure système</p>";
+        break;
+    case 'apps':
+        echo "<p>Gestion des applications métier</p>";
+        break;
+    case 'advice':
+        echo "<p>Conseil et stratégie SI</p>";
+        break;
 }
-
-// Ajouter des listes GLPI (exemple)
-$ticket = new Ticket();
-$ticket->listItems();
 
 echo "</div>";
 

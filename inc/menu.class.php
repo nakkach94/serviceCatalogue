@@ -15,11 +15,11 @@ class PluginServicecatalogueMenu extends CommonGLPI {
     }
 
     static function getMenuContent() {
-        // Vérifier les droits d'accès
         if (!Session::haveRight(self::$rightname, READ)) {
             return false;
         }
 
+        // Menu principal "Service Catalogue"
         $menu = [
             'title' => self::getMenuName(),
             'page'  => self::getDashboardUrl(),
@@ -31,7 +31,7 @@ class PluginServicecatalogueMenu extends CommonGLPI {
                     'icon'  => 'fas fa-chart-bar'
                 ],
                 'support' => [
-                    'title' => __('Demande de support', 'servicecatalogue'),
+                    'title' => __('Demandes de Support', 'servicecatalogue'),
                     'page'  => self::getSubmenuUrl('support'),
                     'icon'  => 'fas fa-headset'
                 ],
@@ -46,7 +46,7 @@ class PluginServicecatalogueMenu extends CommonGLPI {
                     'icon'  => 'fas fa-server'
                 ],
                 'apps' => [
-                    'title' => __('Applications Métier', 'servicecatalogue'),
+                    'title' => __('Application Métier', 'servicecatalogue'),
                     'page'  => self::getSubmenuUrl('apps'),
                     'icon'  => 'fas fa-window-restore'
                 ],
@@ -54,18 +54,12 @@ class PluginServicecatalogueMenu extends CommonGLPI {
                     'title' => __('Conseil SI', 'servicecatalogue'),
                     'page'  => self::getSubmenuUrl('advice'),
                     'icon'  => 'fas fa-lightbulb'
-                ],
-                'config' => [
-                    'title' => __('Configuration', 'servicecatalogue'),
-                    'page'  => self::getConfigUrl(),
-                    'icon'  => 'fas fa-cog',
-                    'right' => 'config' // Nécessite les droits de configuration
                 ]
             ]
         ];
 
-        // Ajouter l'élément de menu au menu "Administration"
-        $menu['default'] = $menu['options']['dashboard']['page'];
+        // Positionnement dans le menu principal
+        $menu['position'] = 15; // Avant "Parc" (Assets) qui est à 20
         
         return $menu;
     }
@@ -79,83 +73,4 @@ class PluginServicecatalogueMenu extends CommonGLPI {
         $type = in_array($type, $valid_types) ? $type : 'support';
         return Plugin::getWebDir('servicecatalogue') . "/front/submenu.php?type=$type";
     }
-
-    static function getConfigUrl() {
-        return Plugin::getWebDir('servicecatalogue') . '/front/config.form.php';
-    }
-
-    static function getIcon() {
-        return 'fas fa-book-open';
-    }
-
-    static function removeRightsFromSession() {
-        if (isset($_SESSION['glpimenu']['admin']['types']['PluginServicecatalogueMenu'])) {
-            unset($_SESSION['glpimenu']['admin']['types']['PluginServicecatalogueMenu']);
-        }
-        if (isset($_SESSION['glpimenu']['admin']['content']['pluginservicecataloguemenu'])) {
-            unset($_SESSION['glpimenu']['admin']['content']['pluginservicecataloguemenu']);
-        }
-    }
-
-    // Fonction pour définir les droits dans les profils
-    static function getAllRights($all = false) {
-        $rights = [
-            [
-                'itemtype'  => __CLASS__,
-                'label'     => __('Accès au catalogue de services', 'servicecatalogue'),
-                'field'     => self::$rightname,
-                'rights'    => [
-                    READ    => __('Lire'),
-                    UPDATE  => __('Modifier'),
-                    CREATE  => __('Créer'),
-                    PURGE   => __('Supprimer')
-                ],
-                'default'   => [
-                    READ    => 1,
-                    UPDATE  => 0,
-                    CREATE  => 0,
-                    PURGE   => 0
-                ]
-            ]
-        ];
-
-        if ($all) {
-            $rights[] = [
-                'itemtype'  => __CLASS__,
-                'label'     => __('Configuration avancée', 'servicecatalogue'),
-                'field'     => 'plugin_servicecatalogue_config',
-                'rights'    => [
-                    UPDATE  => __('Modifier')
-                ],
-                'default'   => [
-                    UPDATE  => 0
-                ]
-            ];
-        }
-
-        return $rights;
-    }
-
-    // Ajout de l'élément dans le menu principal
-    static function addToMainMenu() {
-        global $CFG_GLPI;
-
-        $menu = self::getMenuContent();
-        if ($menu !== false) {
-            Plugin::registerClass(__CLASS__, ['addtabon' => ['Config']);
-
-            $CFG_GLPI['admin_types'][] = __CLASS__;
-            $CFG_GLPI['admin_menu'][] = 'pluginservicecataloguemenu';
-            
-            $_SESSION['glpimenu']['admin']['types']['PluginServicecatalogueMenu'] = 0;
-            $_SESSION['glpimenu']['admin']['content']['pluginservicecataloguemenu'] = $menu;
-        }
-    }
-}
-
-// Ajouter le menu au démarrage de GLPI
-if (method_exists('Plugin', 'registerClass')) {
-    Plugin::registerClass('PluginServicecatalogueMenu', [
-        'addtabon' => ['Config']
-    ]);
 }

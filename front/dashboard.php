@@ -2,39 +2,44 @@
 include ('../../../inc/includes.php');
 Plugin::load('servicecatalogue', true);
 
-Html::header(PluginServicecatalogueMenu::getMenuName(), '', "admin", "pluginservicecataloguemenu");
+Html::header(
+    'Service Catalogue', 
+    $_SERVER['PHP_SELF'], 
+    "servicecatalogue", 
+    "pluginservicecataloguemenu"
+);
 
-echo "<div class='center' style='margin-top: 30px;'>";
-echo "<div class='alert alert-info' style='max-width: 800px; margin: auto;'>";
-echo "<h2><i class='fas fa-chart-bar'></i> " . __('Tableau de Bord Service Catalogue', 'servicecatalogue') . "</h2>";
-echo "<div class='row'>";
+echo "<div class='servicecatalogue-container'>";
+echo "<h1><i class='fas fa-book-open'></i> Service Catalogue</h1>";
+echo "<p>Bienvenue dans le catalogue de services de votre organisation.</p>";
 
-// Widget 1
-echo "<div class='col-md-4'>";
-echo "<div class='card'>";
-echo "<div class='card-header'>".__('Tickets ouverts', 'servicecatalogue')."</div>";
-echo "<div class='card-body text-center' style='font-size: 2em;'>";
-echo Ticket::countOpenTickets();
-echo "</div></div></div>";
+echo "<div class='sc-cards'>";
+echo "<a href='".Plugin::getWebDir('servicecatalogue')."/front/submenu.php?type=support' class='sc-card'>";
+echo "<div class='sc-icon'><i class='fas fa-headset fa-3x'></i></div>";
+echo "<div class='sc-title'>Demandes de Support</div>";
+echo "</a>";
 
-// Widget 2
-echo "<div class='col-md-4'>";
-echo "<div class='card'>";
-echo "<div class='card-header'>".__('Services actifs', 'servicecatalogue')."</div>";
-echo "<div class='card-body text-center' style='font-size: 2em;'>";
-echo "5"; // Remplacer par vraie donnée
-echo "</div></div></div>";
+echo "<a href='".Plugin::getWebDir('servicecatalogue')."/front/submenu.php?type=data' class='sc-card'>";
+echo "<div class='sc-icon'><i class='fas fa-database fa-3x'></i></div>";
+echo "<div class='sc-title'>Données</div>";
+echo "</a>";
 
-// Widget 3
-echo "<div class='col-md-4'>";
-echo "<div class='card'>";
-echo "<div class='card-header'>".__('Utilisateurs', 'servicecatalogue')."</div>";
-echo "<div class='card-body text-center' style='font-size: 2em;'>";
-echo User::countActiveUsers();
-echo "</div></div></div>";
+echo "<a href='".Plugin::getWebDir('servicecatalogue')."/front/submenu.php?type=infra' class='sc-card'>";
+echo "<div class='sc-icon'><i class='fas fa-server fa-3x'></i></div>";
+echo "<div class='sc-title'>Infrastructure SI</div>";
+echo "</a>";
 
-echo "</div>"; // .row
-echo "</div>"; // .alert
-echo "</div>"; // .center
+echo "<a href='".Plugin::getWebDir('servicecatalogue')."/front/submenu.php?type=apps' class='sc-card'>";
+echo "<div class='sc-icon'><i class='fas fa-window-restore fa-3x'></i></div>";
+echo "<div class='sc-title'>Application Métier</div>";
+echo "</a>";
+
+echo "<a href='".Plugin::getWebDir('servicecatalogue')."/front/submenu.php?type=advice' class='sc-card'>";
+echo "<div class='sc-icon'><i class='fas fa-lightbulb fa-3x'></i></div>";
+echo "<div class='sc-title'>Conseil SI</div>";
+echo "</a>";
+echo "</div>"; // fin .sc-cards
+
+echo "</div>"; // fin .servicecatalogue-container
 
 Html::footer();
