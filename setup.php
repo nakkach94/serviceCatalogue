@@ -1,30 +1,38 @@
 <?php
-// Définition des constantes
 define('PLUGIN_SERVICECATALOGUE_VERSION', '1.0.0');
 define('PLUGIN_SERVICECATALOGUE_MIN_GLPI', '10.0.17');
 define('PLUGIN_SERVICECATALOGUE_MAX_GLPI', '11.0');
-define('PLUGIN_SERVICECATALOGUE_ROOT', __DIR__); // Définition ajoutée ici
 
 function plugin_init_servicecatalogue() {
     global $PLUGIN_HOOKS;
     
-    // Enregistrer le nouveau menu principal
+    // CORRECTION : Utiliser 'menu_toadd' pour ajouter un nouveau menu principal
     $PLUGIN_HOOKS['menu_toadd']['servicecatalogue'] = [
         'servicecatalogue' => 'PluginServicecatalogueMenu'
     ];
-    
+    $PLUGIN_HOOKS['menu_entries']['servicecatalogue'] = function() {
+        return PluginServicecatalogueMenu::getMenuContent();
+    };
     $PLUGIN_HOOKS['csrf_compliant']['servicecatalogue'] = true;
+    $PLUGIN_HOOKS['config_page']['servicecatalogue'] = 'front/dashboard.php';
     
-    // Ajouter CSS et JS
-    $PLUGIN_HOOKS['add_css']['servicecatalogue'] = 'css/style.css';
-    $PLUGIN_HOOKS['add_javascript']['servicecatalogue'] = ['js/script.js'];
+    // Ajouter les hooks nécessaires
+    $PLUGIN_HOOKS['post_init']['servicecatalogue'] = 'plugin_servicecatalogue_postinit';
 }
+
+// Nouvelle fonction pour l'initialisation
+function plugin_servicecatalogue_postinit() {
+    Plugin::registerClass('PluginServicecatalogueMenu', [
+        'addtabon' => ['Config']
+    ]);
+}
+
 
 function plugin_version_servicecatalogue() {
     return [
         'name'           => 'Service Catalogue',
         'version'        => PLUGIN_SERVICECATALOGUE_VERSION,
-        'author'         => 'Votre Nom',
+        'author'         => 'Imad Nakkach',
         'license'        => 'GPLv3+',
         'homepage'       => '',
         'requirements'   => [

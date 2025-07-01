@@ -19,11 +19,11 @@ class PluginServicecatalogueMenu extends CommonGLPI {
             return false;
         }
 
-        // Menu principal "Service Catalogue"
         $menu = [
             'title' => self::getMenuName(),
             'page'  => self::getDashboardUrl(),
             'icon'  => 'fas fa-book-open',
+            'position' => 15, // Avant "Parc" (Assets)
             'options' => [
                 'dashboard' => [
                     'title' => __('Tableau de bord', 'servicecatalogue'),
@@ -57,9 +57,6 @@ class PluginServicecatalogueMenu extends CommonGLPI {
                 ]
             ]
         ];
-
-        // Positionnement dans le menu principal
-        $menu['position'] = 15; // Avant "Parc" (Assets) qui est à 20
         
         return $menu;
     }

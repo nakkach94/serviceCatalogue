@@ -10,10 +10,6 @@ class PluginServicecatalogueServicecatalogue extends CommonDBTM {
         return __('Service Catalogue', 'servicecatalogue');
     }
     
-    static function getMenuContent() {
-        return PluginServicecatalogueMenu::getMenuContent();
-    }
-    
     static function install() {
         // Créer le droit dans la base de données
         $right = new ProfileRight();
@@ -31,4 +27,17 @@ class PluginServicecatalogueServicecatalogue extends CommonDBTM {
         
         return true;
     }
+    
+    // Fonction cruciale pour l'affichage du menu
+    static function addToMainMenu() {
+        global $CFG_GLPI;
+        
+        $menu = PluginServicecatalogueMenu::getMenuContent();
+        if ($menu !== false) {
+            $CFG_GLPI['menu'][$menu['title']] = $menu;
+        }
+    }
 }
+
+// Ajouter le menu au démarrage de GLPI
+PluginServicecatalogueServicecatalogue::addToMainMenu();
