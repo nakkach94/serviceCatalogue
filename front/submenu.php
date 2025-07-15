@@ -44,7 +44,7 @@ echo "</div>"; // fin .sc-sidebar
 
 // Contenu spécifique
 echo "<div class='sc-content'>";
-echo "<h2><i class='fas fa-$icon'></i> $title</h2>";
+echo "<h2><i class='fas fa-" . htmlspecialchars($icon, ENT_QUOTES, 'UTF-8') . "'></i> " . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . "</h2>";
 
 // Contenu différent selon le type
 switch ($type) {

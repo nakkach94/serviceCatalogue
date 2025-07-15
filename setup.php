@@ -85,10 +85,12 @@ function plugin_servicecatalogue_install() {
     ];
     
     foreach ($defaults as $name => $value) {
-        $DB->insertOrDie('glpi_plugin_servicecatalogue_configs', [
+        if (!$DB->insert('glpi_plugin_servicecatalogue_configs', [
             'name' => $name,
             'value' => is_array($value) ? json_encode($value) : $value
-        ], "Erreur d'insertion de configuration par défaut");
+        ])) {
+            trigger_error("Erreur d'insertion de configuration par défaut pour '$name'", E_USER_WARNING);
+        }
     }
     
     return true;
@@ -105,11 +107,12 @@ function plugin_servicecatalogue_uninstall() {
         $migration->displayMessage("Table de configuration supprimée");
     }
     
-    // Nettoyage des fichiers temporaires (utilisation de la constante définie)
+    // Nettoyage des fichiers temporaires (utilisation du chemin correct)
+    $plugin_dir = dirname(__FILE__);
     $files_to_remove = [
-        PLUGIN_SERVICECATALOGUE_ROOT . '/css/style.css',
-        PLUGIN_SERVICECATALOGUE_ROOT . '/js/script.js',
-        PLUGIN_SERVICECATALOGUE_ROOT . '/_tmp/*'
+        $plugin_dir . '/css/style.css',
+        $plugin_dir . '/js/script.js',
+        $plugin_dir . '/_tmp/*'
     ];
     
     foreach ($files_to_remove as $file) {
